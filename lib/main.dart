@@ -22,48 +22,53 @@ class FormularioTransferencia extends StatelessWidget {
       appBar: AppBar(title: Text("Criando Transferência"),),
       body: Column(
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _controladorCampoNumeroConta,
-              style: TextStyle(
-                fontSize: 24,
-              ),
-              decoration: InputDecoration(
-                labelText: "Número da Conta",
-                hintText: "0000"
-              ),
-              keyboardType: TextInputType.number,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _controladorCampoValor,
-              style: TextStyle(
-                fontSize: 24
-              ),
-              decoration: InputDecoration(
-                icon: Icon(Icons.monetization_on),
-                labelText: "Valor",
-                hintText: "0.00"
-              ),
-              keyboardType: TextInputType.number,
-            ),
-          ),
+          Editor(_controladorCampoNumeroConta,"Número da Conta", "0000"),
+          Editor(_controladorCampoValor,"Valor","0.00",icone:Icons.monetization_on),
           RaisedButton(
-            onPressed: () {
-              final int numeroConta = int.tryParse(_controladorCampoNumeroConta.text);
-              final double valor = double.tryParse(_controladorCampoValor.text);
-              debugPrint("clicou");
-              if(numeroConta != null && valor != null){
-                final transferenciaCriada = Transferencia(valor, numeroConta);
-                debugPrint(transferenciaCriada.toString());
-              }
-            },
+            onPressed: () =>_criarTransferencia(_controladorCampoNumeroConta, _controladorCampoValor),
             child: Text("Confirmar"),
           )
         ],
+      ),
+    );
+  }
+
+  void _criarTransferencia(TextEditingController _controladorCampoNumeroConta, TextEditingController _controladorCampoValor) {
+
+    final int numeroConta = int.tryParse(_controladorCampoNumeroConta.text);
+    final double valor = double.tryParse(_controladorCampoValor.text);
+
+    if(numeroConta != null && valor != null){
+      final transferenciaCriada = Transferencia(valor, numeroConta);
+      debugPrint(transferenciaCriada.toString());
+    }
+  }
+}
+
+class Editor extends StatelessWidget {
+
+  final TextEditingController controlador;
+  final String descricao;
+  final String dica;
+  final IconData icone;
+
+  const Editor(this.controlador, this.descricao, this.dica,{this.icone}) ;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: TextField(
+        controller: controlador,
+        style: TextStyle(
+          fontSize: 24,
+        ),
+        decoration: InputDecoration(
+            icon:  icone != null ?Icon(icone): null,
+            labelText: descricao,
+            hintText: dica
+        ),
+        keyboardType: TextInputType.number,
       ),
     );
   }
